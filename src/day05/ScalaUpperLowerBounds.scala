@@ -62,8 +62,10 @@ class CmpComm[T: Ordering](o1: T, o2: T) {
 //}
 
 /**
-  * 和MyImpicits 中的隐式转换以及视图界定一起 隐式将Student -> Ordered[Student]
+  * 和MyImpicits 中的隐式转换以及视图界定/上下文界定一起 隐式将Student -> Ordered[Student]
   * 可用来比较排序
+  * 视图界定T <% Comparable[T] 和MyImpicits 中的隐式转换new Ordered[Students]对应
+  * 上下文界定T: Ordering 和 MyImpicits 中的隐式转换new Ordering[Students] new Ordered[Students]都可以匹配
   * @param name
   * @param age
   */
@@ -71,7 +73,24 @@ class Students(val name: String, val age: Int) {
     override def toString: String = this.name + "\t" + this.age
 }
 
+
+
+
+
 object ScalaUpperLowerBounds {
+
+    // 隐式将Student -> Ordered[Student]
+//    implicit def student2OrderedStu(stu: Students) = new Ordered[Students]{
+//        println("Ordered")
+//        override def compare(that: Students): Int = stu.age - that.age
+//    }
+//
+//    // 一个隐式对象实例 -> 一个又具体实现的Comparator
+//
+    implicit val comparatorStu = new Ordering[Students] {
+        println("Ordering")
+        override def compare(x: Students, y: Students): Int = x.age - y.age
+    }
 
 
     def main(args: Array[String]): Unit = {
@@ -79,13 +98,13 @@ object ScalaUpperLowerBounds {
 //        val cmpInt = new CmpLong(8L, 9L)
 //        println(cmpInt.bigger)
 
- //        val cmpcom = new CmpComm(1, 2) // 上界的时候会报错
-        //val cmpcom = new CmpComm(Integer.valueOf(1), Integer.valueOf(2))
+//         val cmpcom = new CmpComm(1, 2) // 上界的时候会报错
+//        val cmpcom = new CmpComm(Integer.valueOf(1), Integer.valueOf(2))
 //        val cmpcom = new CmpComm[Integer](1, 2)
-//    println(cmpcom.bigger)
+//        println(cmpcom.bigger)
 
 //
-        import MyImpicits._
+//        import MyImpicits._
 
         val tom = new Students("Tom", 18)
         val jim = new Students("Jim", 20)
